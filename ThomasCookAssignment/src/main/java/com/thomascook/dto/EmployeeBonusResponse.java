@@ -1,26 +1,12 @@
 package com.thomascook.dto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.util.List;
-
-import com.thomascook.models.CurrencyGroup;
-
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class EmployeeBonusResponse {
-    private String errorMessage;
-    private List<CurrencyGroup> data;
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
-
-    public List<CurrencyGroup> getData() {
-        return data;
-    }
-
-    public void setData(List<CurrencyGroup> data) {
-        this.data = data;
-    }
+    private String empName; 
+    private double amount; 
 }

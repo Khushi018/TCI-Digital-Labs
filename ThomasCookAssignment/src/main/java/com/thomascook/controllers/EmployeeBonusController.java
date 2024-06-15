@@ -1,49 +1,35 @@
 package com.thomascook.controllers;
 
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.util.List;
-import java.util.Locale;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import com.thomascook.dto.EmployeeBonusResponse;
 import com.thomascook.models.Employee;
-import com.thomascook.services.EmployeeBonusService;
+import com.thomascook.services.EmployeeService;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 
 @RestController
+@RequestMapping("/tci")
 public class EmployeeBonusController {
-
     @Autowired
-    private EmployeeBonusService employeeBonusService;
+    private EmployeeService empService;
 
-    @PostMapping("/tci/employee-bonus")
-    public void saveEmployees(@RequestBody List<Employee> employees) {
-        employeeBonusService.saveEmployees(employees);
+    
+    @PostMapping("/employee-bonus")
+    public ResponseEntity<String> saveEmployees(@RequestBody List<Employee> employees) {
+        return new ResponseEntity<>(empService.addEmployee(employees), HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/tci/employee-bonus")
-    public EmployeeBonusResponse getEligibleEmployees(@RequestParam("date") @DateTimeFormat(pattern = "MMM-dd-yyyy") String date) {
-    	
-    	DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder()
-                .parseCaseInsensitive()
-                .appendPattern("MMM-dd-yyyy");
-DateTimeFormatter formatter = builder.toFormatter(Locale.ENGLISH);
-LocalDate requestDate = LocalDate.parse(date, formatter);
-
-  //LocalDate joiningDate = dateConverter(employeePostDTO.getJoiningDate());
-
-        //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM-dd-yyyy", Locale.ENGLISH);
-        //LocalDate requestDate = LocalDate.parse(date, formatter);
-
-        return employeeBonusService.getEligibleEmployees(requestDate);
+   
+    @GetMapping("/employee-bonus")
+    public ResponseEntity<Map<String, List<EmployeeBonusResponse>>> getEmployeesEligible(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        return new ResponseEntity<>(empService.getEmployeesEligible(date), HttpStatus.OK);
     }
 }
